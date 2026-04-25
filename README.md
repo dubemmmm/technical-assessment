@@ -5,11 +5,14 @@ rule and add one new rule type.
 
 ## Setup
 
+Dependencies are pre-installed in your sandbox. Just run:
+
 ```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
 pytest
 ```
+
+(If you ever need to reinstall: `pip install -e ".[dev]"`. No venv — the
+sandbox is already isolated.)
 
 ## The repo
 
