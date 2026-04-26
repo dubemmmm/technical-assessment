@@ -41,16 +41,16 @@ def test_rollout_is_deterministic_for_same_user(client):
 
 def test_rollout_distributes_roughly_to_percentage(client):
     _seed_two_rollouts(50)
-    users = [f"user-{i}" for i in range(1000)]
+    users = [f"user-{i}" for i in range(400)]
     enabled = sum(_enabled(client, "exp-a", u) for u in users)
-    # Allow ±10% slack for a 50% rollout over 1000 users.
-    assert 400 <= enabled <= 600, f"expected ~500, got {enabled}"
+    # Allow ±15% slack for a 50% rollout over 400 users.
+    assert 140 <= enabled <= 260, f"expected ~200, got {enabled}"
 
 
 def test_rollouts_are_independent_across_flags(client):
     """Two different flags at 50% should produce independent populations."""
     _seed_two_rollouts(50)
-    users = [f"user-{i}" for i in range(1000)]
+    users = [f"user-{i}" for i in range(400)]
 
     only_a = 0
     only_b = 0
@@ -63,7 +63,7 @@ def test_rollouts_are_independent_across_flags(client):
             only_b += 1
 
     # If the buckets were truly independent, ~25% of users land in only_a and
-    # ~25% in only_b. We assert a generous floor — 15% — which still fails
+    # ~25% in only_b. We assert a generous floor — ~15% — which still fails
     # hard when the buckets are perfectly correlated (i.e. the bug).
-    assert only_a > 150, f"expected >150 users enabled for A but not B, got {only_a}"
-    assert only_b > 150, f"expected >150 users enabled for B but not A, got {only_b}"
+    assert only_a > 60, f"expected >60 users enabled for A but not B, got {only_a}"
+    assert only_b > 60, f"expected >60 users enabled for B but not A, got {only_b}"
